@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: embedcv-workshop
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: embedcv-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+
+databases:
+  - name: embedcv-db
+    databaseName: embedcv
+    plan: free
