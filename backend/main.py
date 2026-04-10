@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 import jwt
 import bcrypt
@@ -37,7 +37,7 @@ security = HTTPBearer(auto_error=False)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -208,7 +208,7 @@ def get_stats(db: Session = Depends(get_db), current_user: User = Depends(get_cu
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "timestamp": datetime.utcnow().isoformat()}
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 
 # ──────────────────────────────────────────
@@ -261,7 +261,7 @@ def _gen_c_code(mcu: str, prompt: str) -> str:
  * EmbedCV Workshop - Generated Code
  * Target MCU: {mcu}
  * Task: {prompt[:60]}...
- * Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}
+ * Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')}
  */
 
 #include <stdint.h>
