@@ -8,9 +8,9 @@ import jwt
 import bcrypt
 import os
 
-from database import engine, get_db, Base
-from models import User, Project, CodeGeneration
-from schemas import (
+from backend.database import engine, get_db, Base
+from backend.models import User, Project, CodeGeneration
+from backend.schemas import (
     UserCreate, UserLogin, UserOut,
     ProjectCreate, ProjectOut,
     CodeGenRequest, CodeGenOut,
@@ -533,5 +533,5 @@ void loop() {{
 
 
 # ── SERVE FRONTEND (single service deployment) ──
-from static_serve import mount_frontend
+from backend.static_serve import mount_frontend
 mount_frontend(app)
